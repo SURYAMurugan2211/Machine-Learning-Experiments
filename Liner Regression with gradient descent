@@ -1,0 +1,91 @@
+import numpy as np
+import pandas as pd
+data=pd.read_csv("/content/drive/MyDrive/datasets/salary 2  re - salary.csv")
+data
+
+data.isna().sum()
+
+data['Salary']=data['Salary'].fillna(data['Salary'].mean())
+data
+
+from sklearn.impute import SimpleImputer
+s=SimpleImputer(missing_values=np.nan,strategy='mean')
+data['Salary']=s.fit_transform(data.iloc[:,1:])
+data
+
+x=data.iloc[:,0:-1]
+x
+y=data.iloc[:,1:]
+y
+
+from sklearn.preprocessing import StandardScaler
+s=StandardScaler()
+y.iloc[:,0:]=s.fit_transform(y.iloc[:,0:])
+y
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25,random_state=1)
+
+data.corr()
+
+x_train
+
+from sklearn.linear_model import LinearRegression
+r=LinearRegression()
+data=r.fit(x_train,y_train)
+data
+
+r.coef_,r.intercept_
+
+y_pred1=r.predict(x_test)
+y_pred2=r.predict(x_train)
+y_pred1,y_pred2
+
+import matplotlib.pyplot as plt
+plt.scatter(x_train,y_train)
+plt.plot(np.array(x_train),y_pred2,color="red")
+plt.title("Train Data  717822i258-SURYA M")
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+
+
+plt.scatter(x_test,y_test)
+plt.plot(x_test,y_pred1,color="yellow")
+plt.title("Test data 717822i258-SURYA M")
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+
+from sklearn.metrics import r2_score,mean_squared_error as mse
+print("testdata r2_score:",r2_score(y_test,y_pred1))
+print("traindata r2_score:",r2_score(y_train,y_pred2))
+print("testdata mse:",mse(y_test,y_pred1))
+print("traindata mse:",mse(y_train,y_pred2))
+
+import numpy as np
+def gradient_descent(x,y):
+  mcurr=bcurr=0
+  iterations=1000
+  l_r=0.001
+  n=len(x)
+  y_p=[]
+  for i in range(iterations):
+    y_predict=bcurr+mcurr*x
+    y_p.append(y_predict)
+    loss=(1/n)*sum([val**2 for val in (y-y_predict)])
+    md=-(2/n)*sum(x*(y-y_predict))
+    bd=-(2/n)*sum(y-y_predict)
+    bcurr=bcurr-l_r*bd
+    mcurr=mcurr-l_r*md
+    print('m {},b {},loss {},iteration {}'.format(mcurr,bcurr,loss,i))
+  return y_p
+x=np.array([1,2,3,4,5])
+y=np.array([5,7,9,11,13])
+y_p=gradient_descent(x,y)
+
+import matplotlib.pyplot as plt
+plt.scatter(x,y)
+for i in y_p:
+  plt.plot(x,i)
+  plt.xlabel('x data')
+  plt.ylabel('y data')
+  plt.title('717822i258-SURYA M')
